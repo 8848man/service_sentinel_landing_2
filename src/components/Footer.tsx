@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer
@@ -21,7 +23,7 @@ export default function Footer() {
       >
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div
+          {/* <div
             style={{
               width: 24,
               height: 24,
@@ -47,7 +49,17 @@ export default function Footer() {
             }}
           >
             Sentinel
-          </span>
+          </span> */}
+          <a href="#" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+            <Image
+              src="/images/sentinel_main_logo_v2.png"
+              alt="Sentinel"
+              height={32}
+              width={140}
+              style={{ objectFit: "contain", objectPosition: "left" }}
+              priority
+            />
+          </a>
         </div>
 
         {/* Links */}

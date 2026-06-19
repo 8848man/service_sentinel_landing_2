@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -42,40 +43,16 @@ export default function Nav() {
         }}
       >
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 6,
-              background: "linear-gradient(135deg, #4DA3FF 0%, #2563eb 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M7 1L2 4V8L7 13L12 8V4L7 1Z"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              <circle cx="7" cy="7" r="2" fill="white" />
-            </svg>
-          </div>
-          <span
-            style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#E6EDF3",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Sentinel
-          </span>
-        </div>
+        <a href="#" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+          <Image
+            src="/images/sentinel_main_logo_v2.png"
+            alt="Sentinel"
+            height={32}
+            width={140}
+            style={{ objectFit: "contain", objectPosition: "left" }}
+            priority
+          />
+        </a>
 
         {/* Nav links - desktop */}
         <div
@@ -90,6 +67,7 @@ export default function Nav() {
             { label: "Product", href: "#" },
             { label: "How it works", href: "#how-it-works" },
             { label: "Get Started", href: "#get-started" },
+            { label: "Contact", href: "#contact" },
             // { label: "Pricing", href: "#" },
           ].map(({ label, href }) => (
             <a
