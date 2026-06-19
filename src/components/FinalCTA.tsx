@@ -5,11 +5,29 @@ import { useState } from "react";
 export default function FinalCTA() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubmitted(true);
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong");
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +117,7 @@ export default function FinalCTA() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateColumns: "1fr 1fr",
             gap: 16,
             width: "100%",
             maxWidth: 960,
@@ -135,7 +153,7 @@ export default function FinalCTA() {
               }}
             />
 
-            <div
+            {/* <div
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -158,7 +176,7 @@ export default function FinalCTA() {
                 <path d="M3 4l1 1 2-2" stroke="#4DA3FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Most Popular
-            </div>
+            </div> */}
 
             <h3
               style={{
@@ -243,7 +261,7 @@ export default function FinalCTA() {
           </div>
 
           {/* ──── SECONDARY CTA ──── */}
-          <div
+          {/* <div
             style={{
               background: "#121821",
               border: "1px solid rgba(255,255,255,0.07)",
@@ -321,7 +339,7 @@ export default function FinalCTA() {
             >
               Human-guided · 30 min · No hard sell
             </div>
-          </div>
+          </div> */}
 
           {/* ──── TERTIARY CTA ──── */}
           <div
@@ -400,31 +418,36 @@ export default function FinalCTA() {
                   type="email"
                   placeholder="work@company.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setError(""); }}
                   className="input-sentinel"
                   required
+                  disabled={loading}
                 />
+                {error && (
+                  <p style={{ fontSize: 11, color: "#FF5A5A", margin: 0 }}>{error}</p>
+                )}
                 <button
                   type="submit"
+                  disabled={loading}
                   style={{
                     background: "rgba(255,255,255,0.06)",
                     border: "1px solid rgba(255,255,255,0.08)",
                     borderRadius: 8,
-                    color: "#E6EDF3",
+                    color: loading ? "#5a6474" : "#E6EDF3",
                     fontWeight: 500,
                     fontSize: 13,
                     padding: "11px 16px",
-                    cursor: "pointer",
+                    cursor: loading ? "not-allowed" : "pointer",
                     transition: "background 0.2s ease",
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.09)";
+                    if (!loading) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.09)";
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
                   }}
                 >
-                  Join Waitlist
+                  {loading ? "Joining…" : "Join Waitlist"}
                 </button>
               </form>
             )}

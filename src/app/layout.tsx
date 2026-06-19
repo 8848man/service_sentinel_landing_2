@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Turn incident response into repeatable workflows.",
     type: "website",
   },
+  icons: {
+    icon: "/images/sentinel_favicon_v2.png",
+    shortcut: "/images/sentinel_favicon_v2.png",
+    apple: "/images/sentinel_favicon_v2.png",
+  },
 };
 
 export default function RootLayout({

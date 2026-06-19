@@ -6,11 +6,29 @@ export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.name.trim() && form.email.trim() && form.message.trim()) {
-      setSubmitted(true);
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email.trim(), message: form.message.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong");
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -216,11 +234,12 @@ export default function Contact() {
                   type="text"
                   placeholder="Your name"
                   value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  onChange={(e) => { setForm({ ...form, name: e.target.value }); setError(""); }}
                   onFocus={() => setFocused("name")}
                   onBlur={() => setFocused(null)}
                   style={fieldStyle("name")}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -240,11 +259,12 @@ export default function Contact() {
                   type="email"
                   placeholder="you@company.com"
                   value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onChange={(e) => { setForm({ ...form, email: e.target.value }); setError(""); }}
                   onFocus={() => setFocused("email")}
                   onBlur={() => setFocused(null)}
                   style={fieldStyle("email")}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -263,9 +283,10 @@ export default function Contact() {
                 <textarea
                   placeholder="Tell us about your incident workflow, stack, or what you'd like to see..."
                   value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  onChange={(e) => { setForm({ ...form, message: e.target.value }); setError(""); }}
                   onFocus={() => setFocused("message")}
                   onBlur={() => setFocused(null)}
+                  disabled={loading}
                   style={{
                     ...fieldStyle("message"),
                     minHeight: 120,
@@ -275,8 +296,13 @@ export default function Contact() {
                 />
               </div>
 
+              {error && (
+                <p style={{ fontSize: 12, color: "#FF5A5A", margin: 0 }}>{error}</p>
+              )}
+
               <button
                 type="submit"
+                disabled={loading}
                 className="btn-primary"
                 style={{
                   justifyContent: "center",
@@ -285,12 +311,16 @@ export default function Contact() {
                   borderRadius: 9,
                   width: "100%",
                   boxShadow: "0 4px 20px rgba(77,163,255,0.2)",
+                  opacity: loading ? 0.7 : 1,
+                  cursor: loading ? "not-allowed" : "pointer",
                 }}
               >
-                Send Message
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                {loading ? "Sending…" : "Send Message"}
+                {!loading && (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
               </button>
 
               <p style={{ fontSize: 11, color: "#5a6474", textAlign: "center" }}>

@@ -180,7 +180,7 @@ export default function Hero() {
           </a>
 
           {/* Secondary CTA */}
-          <a
+          {/* <a
             href="#"
             className="btn-secondary"
             style={{
@@ -205,7 +205,7 @@ export default function Hero() {
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </a> */}
         </div>
 
         {/* Social proof */}
